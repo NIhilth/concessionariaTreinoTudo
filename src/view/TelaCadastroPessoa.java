@@ -44,6 +44,7 @@ public class TelaCadastroPessoa extends JFrame {
         });
         cadastrarButton.addActionListener(new ActionListener() {
             @Override
+
             public void actionPerformed(ActionEvent e) {
                 try{
                     Pessoa pessoa = null;
