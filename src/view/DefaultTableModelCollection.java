@@ -13,7 +13,7 @@ public class DefaultTableModelCollection extends AbstractTableModel {
     String[] colunas;
 
     public DefaultTableModelCollection(Collection<Pessoa> lista){
-        this.dados = new ArrayList<Pessoa>(lista);
+        this.dados = new ArrayList<>(lista);
         colunas = new String[]{"Nome", "CPF", "Telefone", "Gênero", "Idade", "Matrícula", "Salário"};
     }
 

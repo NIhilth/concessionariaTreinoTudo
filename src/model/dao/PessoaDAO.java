@@ -19,8 +19,8 @@ public class PessoaDAO {
         this.connection = new ConexaoFactory().conectaBD();
     }
 
-    public Collection<Pessoa> selectAll(){
-        Collection<Pessoa> pessoasCollection = new ArrayList<>();
+    public ArrayList<Pessoa> selectAll(){
+        ArrayList<Pessoa> pessoasCollection = new ArrayList<>();
         String sql = "SELECT * from pessoa ";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {

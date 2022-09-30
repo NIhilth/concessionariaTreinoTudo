@@ -3,6 +3,8 @@ package model.service;
 import model.dao.PessoaDAO;
 import model.entities.Pessoa;
 
+import java.util.ArrayList;
+
 public class PessoaService {
     PessoaDAO pessoaDAO = new PessoaDAO();
 
@@ -19,4 +21,8 @@ public class PessoaService {
     }
 
     public void update(String antigoCpf,Pessoa pessoa){pessoaDAO.update(antigoCpf,pessoa);}
+
+    public ArrayList<Pessoa> selectAll() {
+        return pessoaDAO.selectAll();
+    }
 }

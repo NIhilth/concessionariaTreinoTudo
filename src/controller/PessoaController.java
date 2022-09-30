@@ -1,9 +1,12 @@
 package controller;
 
 import model.entities.Cliente;
+import model.entities.Dono;
 import model.entities.Funcionario;
 import model.entities.Pessoa;
 import model.service.PessoaService;
+
+import java.util.ArrayList;
 
 public class PessoaController {
     private Funcionario model;
@@ -31,4 +34,26 @@ public class PessoaController {
     public void editarPessoa(String antigoCpf,Pessoa pessoa){pessoaService.update(antigoCpf,pessoa);}
 
     public Pessoa selecionarPessoa(String cpf){return pessoaService.selectByCPF(cpf);}
+
+    public ArrayList<Pessoa> selecionarPessoas(Pessoa usuario){
+        ArrayList<Pessoa> listaPessoas = pessoaService.selectAll();
+
+        if(usuario instanceof Dono) {
+            return listaPessoas;
+        }
+
+        ArrayList<Pessoa> pessoasPraRemover = new ArrayList<>();
+
+        for(Pessoa pessoa : listaPessoas){
+            if(pessoa instanceof Funcionario){
+                pessoasPraRemover.add(pessoa);
+            }
+        }
+
+        for(Pessoa pessoa : pessoasPraRemover){
+            listaPessoas.remove(pessoa);
+        }
+
+        return listaPessoas;
+    }
 }

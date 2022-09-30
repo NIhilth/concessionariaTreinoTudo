@@ -48,8 +48,9 @@ public class MenuPessoas extends JFrame implements ActionListener {
             saindo();
             telaCadastroPessoa.setVisible(true);
         } else if (comando.equals("listarPessoas")) {
-            dispose();
-            //tela de listar pessoas
+            TelaPessoas telaPessoas = new TelaPessoas(usuario);
+            saindo();
+            telaPessoas.setVisible(true);
         } else if (comando.equals("editarPessoa")) {
             String cpf = pegarCPF();
             TelaCadastroPessoa telaCadastroPessoa = new TelaCadastroPessoa(usuario, cpf);
