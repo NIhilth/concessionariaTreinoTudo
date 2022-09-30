@@ -44,7 +44,7 @@ public class MenuPessoas extends JFrame implements ActionListener {
         String comando = e.getActionCommand();
         PessoaController pessoaController = new PessoaController();
         if (comando.equals("cadastrarPessoa")) {
-            TelaCadastroPessoa telaCadastroPessoa = new TelaCadastroPessoa(usuario);
+            TelaCadastroPessoa telaCadastroPessoa = new TelaCadastroPessoa(usuario, null);
             saindo();
             telaCadastroPessoa.setVisible(true);
         } else if (comando.equals("listarPessoas")) {
@@ -52,8 +52,9 @@ public class MenuPessoas extends JFrame implements ActionListener {
             //tela de listar pessoas
         } else if (comando.equals("editarPessoa")) {
             String cpf = pegarCPF();
-            System.out.println("Cpf: " + cpf);
-            //modal pra informar cpf e daí ir pra tela de cadastro mas pra editar
+            TelaCadastroPessoa telaCadastroPessoa = new TelaCadastroPessoa(usuario, cpf);
+            saindo();
+            telaCadastroPessoa.setVisible(true);
         } else if (comando.equals("removerPessoa")) {
             String cpf = pegarCPF();
             if (cpf != null) {

@@ -26,6 +26,12 @@ public class Funcionario extends Pessoa{
         this.senha = senha;
     }
 
+    public Funcionario(String nome, String cpf, String telefone, Genero genero, int idade, int matricula, String senha, double salario) {
+        super(nome, cpf, telefone, genero, idade, matricula);
+        this.senha = senha;
+        this.salario = salario;
+    }
+
     public void mudarSalario(double precoAuto, double porc){
         if(porc == -1){
             this.salario += precoAuto * 0.02;

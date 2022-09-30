@@ -12,6 +12,7 @@ import java.awt.event.ItemListener;
 public class TelaCadastroPessoa extends JFrame {
     private Boolean cadastrandoFuncionario = false;
     private Pessoa usuario;
+    private Pessoa pessoaPraEditar;
     private JButton voltarButton;
     private JButton cadastrarButton;
     private JPanel CadastroPessoa;
@@ -25,16 +26,36 @@ public class TelaCadastroPessoa extends JFrame {
     private JPasswordField InputConfirmarSenha;
     private JLabel ConfirmarSenhaLabel;
     private JLabel SenhaLable;
+    private JTextField InputSalario;
+    private JLabel SalarioLabel;
+    private JLabel titulo;
 
-    public TelaCadastroPessoa(Pessoa usuario) {
+    public TelaCadastroPessoa(Pessoa usuario, String cpf) {
         this.usuario = usuario;
-        if (!(usuario instanceof Dono)) {
+        if(cpf != null){
+            this.pessoaPraEditar = new PessoaController().selecionarPessoa(cpf);
             FuncionarioCheck.setVisible(false);
+            if(pessoaPraEditar instanceof Cliente){
+                InputSenha.setVisible(false);
+                InputConfirmarSenha.setVisible(false);
+                InputSalario.setVisible(false);
+                SenhaLable.setVisible(false);
+                ConfirmarSenhaLabel.setVisible(false);
+                SalarioLabel.setVisible(false);
+            }
+        } else {
+            if(!(usuario instanceof Dono)){
+                FuncionarioCheck.setVisible(false);
+            }
+
+            InputSenha.setVisible(false);
+            InputConfirmarSenha.setVisible(false);
+            InputSalario.setVisible(false);
+            SenhaLable.setVisible(false);
+            ConfirmarSenhaLabel.setVisible(false);
+            SalarioLabel.setVisible(false);
         }
-        InputSenha.setVisible(false);
-        InputConfirmarSenha.setVisible(false);
-        ConfirmarSenhaLabel.setVisible(false);
-        SenhaLable.setVisible(false);
+
         criarComponentes();
         voltarButton.addActionListener(new ActionListener() {
             @Override
@@ -50,7 +71,8 @@ public class TelaCadastroPessoa extends JFrame {
                     if(cadastrandoFuncionario){
                         if(InputNome.getText().isEmpty() || InputCPF.getText().isEmpty() ||
                         InputTelefone.getText().isEmpty() || InputIdade.getText().isEmpty() ||
-                        InputSenha.getText().isEmpty() || InputConfirmarSenha.getText().isEmpty()){
+                        InputSenha.getText().isEmpty() || InputConfirmarSenha.getText().isEmpty()
+                        || InputSalario.getText().isEmpty()){
                             throw new RuntimeException("Um ou mais campos estão vazios");
                         }
 
@@ -60,7 +82,7 @@ public class TelaCadastroPessoa extends JFrame {
 
                         pessoa = new Funcionario(InputNome.getText(),InputCPF.getText(),InputTelefone.getText(),
                                 (Genero) comboBoxGenero.getSelectedItem(), Integer.parseInt(InputIdade.getText()),
-                                0,InputSenha.getText());
+                                0,InputSenha.getText(), Double.parseDouble(InputSalario.getText()));
                     } else {
                         if(InputNome.getText().isEmpty() || InputCPF.getText().isEmpty() || InputTelefone.getText().isEmpty() || InputIdade.getText().isEmpty()){
                             throw new RuntimeException("Um ou mais campos estão vazios");
@@ -70,8 +92,15 @@ public class TelaCadastroPessoa extends JFrame {
                                 (Genero) comboBoxGenero.getSelectedItem(), Integer.parseInt(InputIdade.getText()), 0);
                     }
                     PessoaController pessoaController = new PessoaController();
-                    pessoaController.cadastrarPessoa(pessoa);
-                    JOptionPane.showMessageDialog(null, "Pessoa cadastrada com sucesso!");
+                    String acao = "";
+                    if(pessoaPraEditar != null){
+                        pessoaController.editarPessoa(cpf,pessoa);
+                        acao = "editada";
+                    } else {
+                        pessoaController.cadastrarPessoa(pessoa);
+                        acao = "cadastrada";
+                    }
+                    JOptionPane.showMessageDialog(null, "Pessoa "+ acao +" com sucesso!");
                     voltar();
                 } catch (Exception exception){
                     JOptionPane.showMessageDialog(null, exception.getMessage());
@@ -83,8 +112,10 @@ public class TelaCadastroPessoa extends JFrame {
             public void itemStateChanged(ItemEvent e) {
                 InputSenha.setVisible(!cadastrandoFuncionario);
                 InputConfirmarSenha.setVisible(!cadastrandoFuncionario);
-                ConfirmarSenhaLabel.setVisible(!cadastrandoFuncionario);
+                InputSalario.setVisible(!cadastrandoFuncionario);
                 SenhaLable.setVisible(!cadastrandoFuncionario);
+                ConfirmarSenhaLabel.setVisible(!cadastrandoFuncionario);
+                SalarioLabel.setVisible(!cadastrandoFuncionario);
                 cadastrandoFuncionario = !cadastrandoFuncionario;
             }
         });
@@ -99,6 +130,22 @@ public class TelaCadastroPessoa extends JFrame {
 
     private void criarComponentes() {
         comboBoxGenero.setModel(new DefaultComboBoxModel(Genero.values()));
+        if(this.pessoaPraEditar != null){
+            titulo.setText("EDIÇÃO PESSOA");
+            cadastrarButton.setText("EDITAR");
+
+            Pessoa pessoa = pessoaPraEditar;
+            InputNome.setText(pessoa.getNome());
+            InputCPF.setText(pessoa.getCpf());
+            InputTelefone.setText(pessoa.getTelefone());
+            InputIdade.setText(String.valueOf(pessoa.getIdade()));
+            comboBoxGenero.setSelectedItem(pessoa.getGenero());
+            if(pessoa instanceof Funcionario){
+                InputSalario.setText(String.valueOf(((Funcionario)pessoa).getSalario()));
+                InputSenha.setText(((Funcionario) pessoa).getSenha());
+                InputConfirmarSenha.setText(((Funcionario) pessoa).getSenha());
+            }
+        }
         setContentPane(CadastroPessoa);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();

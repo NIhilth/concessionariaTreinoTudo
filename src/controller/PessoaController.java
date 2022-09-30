@@ -27,4 +27,8 @@ public class PessoaController {
     public void cadastrarPessoa(Pessoa pessoa) {
         pessoaService.insert(pessoa);
     }
+
+    public void editarPessoa(String antigoCpf,Pessoa pessoa){pessoaService.update(antigoCpf,pessoa);}
+
+    public Pessoa selecionarPessoa(String cpf){return pessoaService.selectByCPF(cpf);}
 }

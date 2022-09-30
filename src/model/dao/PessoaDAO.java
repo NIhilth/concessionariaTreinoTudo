@@ -138,19 +138,57 @@ public class PessoaDAO {
         throw new RuntimeException("Cpf da pessoa inválido");
     }
 
+    public void update(String antigoCpf,Pessoa pessoa){
+        String sql = "update pessoa set nome = ? , telefone = ? , genero = ? , idade = ? , cpf = ? where cpf = ?";
+
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, pessoa.getNome());
+            statement.setString(2, pessoa.getTelefone());
+            statement.setString(3, pessoa.getGenero().getNome());
+            statement.setInt(4, pessoa.getIdade());
+            statement.setString(5, pessoa.getCpf());
+            statement.setString(6, antigoCpf);
+            try{
+                if(pessoa instanceof Funcionario){
+                    updateFuncionario(antigoCpf, (Funcionario) pessoa);
+                }
+                statement.execute();
+                return;
+            }catch (Exception exception){
+                exception.printStackTrace();
+            }
+        } catch (Exception exception){
+            exception.printStackTrace();
+        }
+
+        throw new RuntimeException("Edição da pessoa deu errado");
+    }
+
+    private void updateFuncionario(String antigoCpf, Funcionario pessoa) {
+        String sql = "update funcionario set salario = ?,senha = ? where PESSOA_cpf = ?";
+
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setDouble(1, pessoa.getSalario());
+            statement.setString(2, pessoa.getSenha());
+            statement.setString(3, antigoCpf);
+            try{
+                statement.execute();
+                return;
+            }catch (Exception exception){
+                exception.printStackTrace();
+            }
+        } catch (Exception exception){
+            exception.printStackTrace();
+        }
+
+        throw new RuntimeException("Edição do funcionário deu errado");
+    }
+
     private void insertFuncionario(Funcionario funcionario) {
         String sql = "insert into funcionario values (?,?,?)";
 
         try(PreparedStatement statement = connection.prepareStatement(sql)){
-            Integer tipo = pegarTipo(funcionario);
-            Double salario;
-            if(tipo == 2){
-                salario = 1250.0;
-            } else {
-                salario = 30000.0;
-            }
-
-            statement.setDouble(1, salario);
+            statement.setDouble(1, funcionario.getSalario());
             statement.setString(2,  funcionario.getSenha());
             statement.setString(3, funcionario.getCpf());
             try{
@@ -205,14 +243,16 @@ public class PessoaDAO {
 
     private Integer pegarMatricula(Integer tipoDaMatricula) {
         Collection<Pessoa> pessoas = selectAll();
-        Integer matricula = 1;
+        Integer maiorMatricula = 0;
         for(Pessoa pessoa : pessoas){
             Integer tipoDaPessoa = pegarTipo(pessoa);
             if(tipoDaPessoa == tipoDaMatricula){
-                matricula++;
+                if(pessoa.getMatricula() > maiorMatricula){
+                    maiorMatricula = pessoa.getMatricula();
+                }
             }
         }
-        return matricula;
+        return maiorMatricula + 1;
     }
 
     private Integer pegarTipo(Pessoa pessoa){

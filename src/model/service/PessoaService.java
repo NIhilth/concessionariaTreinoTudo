@@ -14,8 +14,9 @@ public class PessoaService {
         pessoaDAO.insert(pessoa);
     }
 
-
     public void remove(String cpf) {
         pessoaDAO.remove(cpf);
     }
+
+    public void update(String antigoCpf,Pessoa pessoa){pessoaDAO.update(antigoCpf,pessoa);}
 }
